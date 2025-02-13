@@ -1,0 +1,158 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class Bug {
+    int id;
+    String description;
+    String severity;
+    String status;
+
+    public Bug(int id, String description, String severity) {
+        this.id = id;
+        this.description = description;
+        this.severity = severity;
+        this.status = "Open";
+    }
+
+    public void updateStatus(String status) {
+        this.status = status;
+    }
+
+    public void displayBug() {
+        System.out.println("Bug ID: " + id + ", Description: " + description + ", Severity: " + severity + ", Status: " + status);
+    }
+}
+
+class TestCase {
+    int id;
+    String description;
+    String expectedResult;
+    String actualResult;
+    boolean passed;
+
+    public TestCase(int id, String description, String expectedResult) {
+        this.id = id;
+        this.description = description;
+        this.expectedResult = expectedResult;
+        this.actualResult = "";
+        this.passed = false;
+    }
+
+    public void executeTest(String actualResult) {
+        this.actualResult = actualResult;
+        this.passed = expectedResult.equals(actualResult);
+    }
+
+    public void displayTestCase() {
+        System.out.println("TestCase ID: " + id + ", Description: " + description + ", Expected: " + expectedResult + ", Actual: " + actualResult + ", Passed: " + passed);
+    }
+}
+
+public class BugTrackingSystem {
+    static ArrayList<Bug> bugList = new ArrayList<>();
+    static ArrayList<TestCase> testCaseList = new ArrayList<>();
+    static Scanner scanner = new Scanner(System.in);
+    static int bugCounter = 1, testCaseCounter = 1;
+
+    public static void main(String[] args) {
+        while (true) {
+            System.out.println("1. Add Test Case\n2. Execute Test Case\n3. Report Bug\n4. Update Bug Status\n5. View All Bugs\n6. View All Test Cases\n7. Exit");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+            switch (choice) {
+                case 1:
+                    addTestCase();
+                    break;
+                case 2:
+                    executeTestCase();
+                    break;
+                case 3:
+                    reportBug();
+                    break;
+                case 4:
+                    updateBugStatus();
+                    break;
+                case 5:
+                    viewAllBugs();
+                    break;
+                case 6:
+                    viewAllTestCases();
+                    break;
+                case 7:
+                    System.exit(0);
+                default:
+                    System.out.println("Invalid Choice! Try again.");
+            }
+        }
+    }
+
+    static void addTestCase() {
+        System.out.println("Enter Test Case Description:");
+        String desc = scanner.nextLine();
+        System.out.println("Enter Expected Result:");
+        String expected = scanner.nextLine();
+        testCaseList.add(new TestCase(testCaseCounter++, desc, expected));
+        System.out.println("Test Case Added Successfully!");
+    }
+
+    static void executeTestCase() {
+        System.out.println("Enter Test Case ID to Execute:");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        for (TestCase test : testCaseList) {
+            if (test.id == id) {
+                System.out.println("Enter Actual Result:");
+                String actual = scanner.nextLine();
+                test.executeTest(actual);
+                System.out.println("Test Case Executed!");
+                return;
+            }
+        }
+        System.out.println("Test Case Not Found!");
+    }
+
+    static void reportBug() {
+        System.out.println("Enter Bug Description:");
+        String desc = scanner.nextLine();
+        System.out.println("Enter Bug Severity (Low/Medium/High):");
+        String severity = scanner.nextLine();
+        bugList.add(new Bug(bugCounter++, desc, severity));
+        System.out.println("Bug Reported Successfully!");
+    }
+
+    static void updateBugStatus() {
+        System.out.println("Enter Bug ID to Update:");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        for (Bug bug : bugList) {
+            if (bug.id == id) {
+                System.out.println("Enter New Status (Open/In Progress/Closed):");
+                String status = scanner.nextLine();
+                bug.updateStatus(status);
+                System.out.println("Bug Status Updated!");
+                return;
+            }
+        }
+        System.out.println("Bug Not Found!");
+    }
+
+    static void viewAllBugs() {
+        if (bugList.isEmpty()) {
+            System.out.println("No Bugs Reported Yet!");
+        } else {
+            for (Bug bug : bugList) {
+                bug.displayBug();
+            }
+        }
+    }
+
+    static void viewAllTestCases() {
+        if (testCaseList.isEmpty()) {
+            System.out.println("No Test Cases Available!");
+        } else {
+            for (TestCase test : testCaseList) {
+                test.displayTestCase();
+            }
+        }
+    }
+}
